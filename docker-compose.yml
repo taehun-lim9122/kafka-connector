@@ -1,0 +1,90 @@
+version: '3'
+
+services:
+  connect-1:
+    build: # Dockerfile을 build하기 위한 경로
+      context: . # 경로
+      dockerfile: connect.Dockerfile # 파일명
+    container_name: connect-1 # 컨테이너 이름
+    networks:
+      - kafka-cluster
+    ports: # 포트
+      - 8083:8083
+    environment: # 환경변수
+      CONNECT_BOOTSTRAP_SERVERS: "broker-1:29092,broker-2:29093,broker-3:29094" # 브로커들의 부트스트랩 서버 목록
+      CONNECT_REST_PORT: 8083
+      # Connect에서는 REST API 대한 요청에 대한 처리와 Connector의 등록, 설정, 시작, 종료 등의 처리를 담당하는 Worker 존재
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect-1 # Worker 간의 연결이 가능하도록 호스트 이름 지정
+      CONNECT_GROUP_ID: docker-connect-group # Connect의 Worker 프로세스 그룹(또는 클러스터)를 구성하는 데 사용하는 고유한 ID 지정
+      # 단! Consumer 그룹 ID와 충돌하면 안됨....
+      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs # Connector의 환경 설정을 저장할 브로커의 토픽 이름
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3 # 환경 설정을 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets # Connector의 offset을 저장할 브로커의 토픽 이름
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3 # Offset을 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status # Connector와 tast의 상태를 저장할 브로커의 토픽 이름을 설정
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3 # 상태를 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter # Key에 대한 Converter 설정(여기서는 StringCoverter)
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter # Value에 대한 Converter 설정(여기서는 JsonConverter)
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081 # Value Converter에 대한 Schema Registry URL 설정
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+
+  connect-2:
+    build: # Dockerfile을 build하기 위한 경로
+      context: . # 경로
+      dockerfile: connect.Dockerfile # 파일명
+    container_name: connect-2 # 컨테이너 이름
+    networks:
+      - kafka-cluster
+    ports: # 포트
+      - 8084:8083
+    environment: # 환경변수
+      CONNECT_BOOTSTRAP_SERVERS: "broker-1:29092,broker-2:29093,broker-3:29094" # 브로커들의 부트스트랩 서버 목록
+      CONNECT_REST_PORT: 8084
+      # Connect에서는 REST API 대한 요청에 대한 처리와 Connector의 등록, 설정, 시작, 종료 등의 처리를 담당하는 Worker 존재
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect-2 # Worker 간의 연결이 가능하도록 호스트 이름 지정
+      CONNECT_GROUP_ID: docker-connect-group # Connect의 Worker 프로세스 그룹(또는 클러스터)를 구성하는 데 사용하는 고유한 ID 지정
+      # 단! Consumer 그룹 ID와 충돌하면 안됨....
+      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs # Connector의 환경 설정을 저장할 브로커의 토픽 이름
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3 # 환경 설정을 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets # Connector의 offset을 저장할 브로커의 토픽 이름
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3 # Offset을 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status # Connector와 tast의 상태를 저장할 브로커의 토픽 이름을 설정
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3 # 상태를 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter # Key에 대한 Converter 설정(여기서는 StringCoverter)
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter # Value에 대한 Converter 설정(여기서는 JsonConverter)
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081 # Value Converter에 대한 Schema Registry URL 설정
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+
+  connect-3:
+    build: # Dockerfile을 build하기 위한 경로
+      context: . # 경로
+      dockerfile: connect.Dockerfile # 파일명
+    container_name: connect-3 # 컨테이너 이름
+    networks:
+      - kafka-cluster
+    ports: # 포트
+      - 8085:8083
+    environment: # 환경변수
+      CONNECT_BOOTSTRAP_SERVERS: "broker-1:29092,broker-2:29093,broker-3:29094" # 브로커들의 부트스트랩 서버 목록
+      CONNECT_REST_PORT: 8085
+      # Connect에서는 REST API 대한 요청에 대한 처리와 Connector의 등록, 설정, 시작, 종료 등의 처리를 담당하는 Worker 존재
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect-3 # Worker 간의 연결이 가능하도록 호스트 이름 지정
+      CONNECT_GROUP_ID: docker-connect-group # Connect의 Worker 프로세스 그룹(또는 클러스터)를 구성하는 데 사용하는 고유한 ID 지정
+      # 단! Consumer 그룹 ID와 충돌하면 안됨....
+      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs # Connector의 환경 설정을 저장할 브로커의 토픽 이름
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3 # 환경 설정을 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets # Connector의 offset을 저장할 브로커의 토픽 이름
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3 # Offset을 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status # Connector와 tast의 상태를 저장할 브로커의 토픽 이름을 설정
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3 # 상태를 저장하는 토픽을 생성할 때 사용할 Replication Factor의 수
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter # Key에 대한 Converter 설정(여기서는 StringCoverter)
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter # Value에 대한 Converter 설정(여기서는 JsonConverter)
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081 # Value Converter에 대한 Schema Registry URL 설정
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+  
+networks:
+  kafka-cluster:
+    external: true
